@@ -107,16 +107,15 @@ def look(_sfield,bomb,q, method = "best"):
                 sfield[x,y] = r*(1./(1.-p*q))
         return False,sfield
 
-def search(sfield,bomb,method = "best"):
+def search(sfield,bomb,q,method = "best"):
     '''
-    Search for the specified bomb (tuple) in the specified search field (an array), using
-    the specified method ("best" or "random"). Returns the number of
-    looks it took to find the bomb.
+    Same arguments as the look function, but calls look until the bomb
+    is found are returns how long it took.
     '''
     m = method
     tries = 0
     found = False
     while found == False:
         tries += 1
-        found,sfield = look(sfield,bomb,method = m)
+        found,sfield = look(sfield,bomb,q,method = m)
     return tries
