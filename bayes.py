@@ -1,10 +1,6 @@
 import numpy as np
 import random
 
-#what is the probability that we find the bomb if it is in the square we search?
-#The globality is a hack, it should be a parameter passed to the look and search functions
-q = 0.95
-
 def choosefrompdf(pdf):
     '''
     Given a numpy array representing a probability density function,
