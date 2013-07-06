@@ -15,7 +15,7 @@ BITTMP=`mktemp bitXXXX.mp4`
 # use ffmpeg to get the bit we care about
 ffmpeg -i $VIDEO -ss $2 -t $3 -y $BITTMP
 
-# make three tmpfiles
+# make two tmpfiles
 SWAPTMP=`mktemp swapXXXX`
 PREVTMP=`mktemp prevXXXX`
 
