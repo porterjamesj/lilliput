@@ -1,18 +1,34 @@
 #!/bin/sh
-# get video from youtube
-youtube-dl -o fromyt.mp4 $1
-# use ffmpeg to get the bit we care about
-ffmpeg -ss $2 -t $3 -i fromyt.mp4 out.mp4
+# figure out if we are working from a video or a file
+if [[ $1 =~ "^http" || $1 =~ "^www" ]]
+then
+    # make a temporary file to hold the video
+    TMPFILE=`mktemp fromytXXXXX`
+    # get video from youtube
+    youtube-dl -o $TMPFILE $1
+    VIDEO=$TMPFILE
+else #this is just a file that already exists
+    VIDEO=$1
+fi
+# make a tmpfile to hold the bit we care about
+BITTMP=`mktemp bitXXXX`
+# use mencoder to get the bit we care about
+mencoder -ss $2 -endpos $3 -oac pcm -ovc copy $VIDEO -o $BITTMP
+
+# make three tmpfiles
+SWAPTMP=`mktemp swapXXX`
+PREVTMP=`mktemp swapXXX`
+
 # copy it
-cp out.mp4 next.mp4
-cp out.mp4 prev.mp4
+cp $BITTMP $PREVTMP
+
 # stitch them together with mencoder
 for ((i=2;i<=$4;i++))
 do
-    mencoder -oac pcm -ovc copy -idx -o out.mp4 prev.mp4 next.mp4
-    rm prev.mp4
-    mv out.mp4 prev.mp4
+    mencoder -oac pcm -ovc copy -idx -o $SWAPTMP $PREVTMP $BITTMP
+    rm $PREVTMP
+    mv $SWAPTMP $PREVTMP
 done
 #cleanup
-mv prev.mp4 out.mp4
-rm fromyt.mp4 next.mp4
+mv $PREVTMP $5
+rm $BITTMP $SWAPTMP
