@@ -11,13 +11,13 @@ else #this is just a file that already exists
     VIDEO=$1
 fi
 # make a tmpfile to hold the bit we care about
-BITTMP=`mktemp bitXXXX`
-# use mencoder to get the bit we care about
-mencoder -ss $2 -endpos $3 -oac pcm -ovc copy $VIDEO -o $BITTMP
+BITTMP=`mktemp bitXXXX.mp4`
+# use ffmpeg to get the bit we care about
+ffmpeg -i $VIDEO -ss $2 -t $3 -y $BITTMP
 
 # make three tmpfiles
-SWAPTMP=`mktemp swapXXX`
-PREVTMP=`mktemp swapXXX`
+SWAPTMP=`mktemp swapXXXX`
+PREVTMP=`mktemp prevXXXX`
 
 # copy it
 cp $BITTMP $PREVTMP
@@ -31,4 +31,4 @@ do
 done
 #cleanup
 mv $PREVTMP $5
-rm $BITTMP $SWAPTMP
+rm $BITTMP
